@@ -1,16 +1,21 @@
 import os
-from pprint import pprint
 
-import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from lib.collect import search_albums, get_album_tracks
+from lib.collect import *
+from lib.db import *
 
 # SPOTIFY_SEARCH_LIMIT = 1000
 SPOTIFY_SEARCH_LIMIT = 100  # DEBUG
+DB_NAME = "soundtrack.sqlite"
 
 
 def main():
+    # DBの準備
+    conn = connect_db(DB_NAME)
+    create_albums_table_if_not_exists(conn)
+    create_tracks_table_if_not_exists(conn)
+
     # Spotify APIの準備
     my_id = os.environ["SPOTIFY_CLIENT_ID"]
     my_secret = os.environ["SPOTIFY_CLIENT_SECRET"]
@@ -35,6 +40,7 @@ def main():
 
         for album in albums:
             # アルバムとそのアーティストを取り出す!
+            insert_album(conn, Album(id=album['id'], name=album['name']))
             print(f"{album['name']}: {album['id']}")
             print("  artists:", ", ".join(f"{artist['name']}: {artist['id']}" for artist in album["artists"]))
 
@@ -47,7 +53,16 @@ def main():
             )
             gain_tracks.extend(tracks)
             for track in tracks:
+                track_data = get_track_features(
+                    sc=sc,
+                    album_id=album['id'],
+                    track_id=track['id'],
+                    track_name=track['name'])
+                insert_track(conn, track_data)
                 print(f"    * {track['name']}: {track['id']}")
+                # time.sleep(0.5)
+
+    conn.close()
 
 
 if __name__ == "__main__":
