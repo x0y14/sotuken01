@@ -111,3 +111,15 @@ def insert_album(conn: sqlite3.Connection, album: Album):
         (album.id, album.name)
     )
     conn.commit()
+
+
+def is_track_exists(conn: sqlite3.Connection, track_id: str) -> bool:
+    cursor = conn.cursor()
+    cursor.execute("select * from tracks where id=?", (track_id,))
+    return cursor.fetchone() is not None
+
+
+def is_album_exists(conn: sqlite3.Connection, album_id: str) -> bool:
+    cursor = conn.cursor()
+    cursor.execute("select * from albums where id=?", (album_id,))
+    return cursor.fetchone() is not None
