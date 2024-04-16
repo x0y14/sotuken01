@@ -24,7 +24,7 @@ def search_albums(sc: spotipy.client.Spotify, q: str, limit: int, offset: int):
         if album["album_type"] != "album":
             continue
         # スパムっぽかったらスルー
-        if is_include_spam_artist(album["artists"]) or is_include_spam_artist(album["artists"]):
+        if is_include_spam_artist(album["artists"]) or include_spam_text(album["name"]):
             continue
         # 取得したアルバムとして保存
         gain_albums.append(album)
