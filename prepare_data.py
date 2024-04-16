@@ -1,4 +1,5 @@
 import os
+import time
 
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -40,6 +41,8 @@ def main():
 
         for album in albums:
             # アルバムとそのアーティストを取り出す!
+            if is_album_exists(conn, album['id']):  # DBに有るのでスキップ
+                continue
             insert_album(conn, Album(id=album['id'], name=album['name']))
             print(f"{album['name']}: {album['id']}")
             print("  artists:", ", ".join(f"{artist['name']}: {artist['id']}" for artist in album["artists"]))
@@ -53,6 +56,8 @@ def main():
             )
             gain_tracks.extend(tracks)
             for track in tracks:
+                if is_track_exists(conn, track['id']):
+                    continue
                 track_data = get_track_features(
                     sc=sc,
                     album_id=album['id'],
@@ -60,7 +65,7 @@ def main():
                     track_name=track['name'])
                 insert_track(conn, track_data)
                 print(f"    * {track['name']}: {track['id']}")
-                # time.sleep(0.5)
+                time.sleep(1)
 
     conn.close()
 
