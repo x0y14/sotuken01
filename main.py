@@ -4,7 +4,7 @@ from pprint import pprint
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from collect import search_albums, get_album_tracks
+from lib.collect import search_albums, get_album_tracks
 
 # SPOTIFY_SEARCH_LIMIT = 1000
 SPOTIFY_SEARCH_LIMIT = 100  # DEBUG
