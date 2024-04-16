@@ -1,6 +1,6 @@
 import spotipy
 
-from spam import include_spam_text, is_include_spam_artist
+from lib.spam import include_spam_text, is_include_spam_artist
 
 MARKET = "JP"
 
