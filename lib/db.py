@@ -65,6 +65,14 @@ def create_albums_table_if_not_exists(conn: sqlite3.Connection):
     conn.commit()
 
 
+def create_genres_table_if_not_exists(conn: sqlite3.Connection):
+    cursor = conn.cursor()
+    cursor.execute(
+        """create table if not exists genres( id text primary key, genres text )"""
+    )
+    conn.commit()
+
+
 def insert_track(conn: sqlite3.Connection, track: Track):
     cursor = conn.cursor()
     cursor.execute(
