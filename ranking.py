@@ -4,7 +4,9 @@ from lib.db import *
 from lib.util import *
 
 DB_NAME = "soundtrack.sqlite"
-WANT_TO_KNOW_MOST_SIMILAR_WITH = "2ufkFJsK2Hh2ZdmgrRmCv3"
+WANT_TO_KNOW_MOST_SIMILAR_WITH = "3iLHMc4qYd3b9k7JbtxxBq"
+# persona4 78LGjDUuu5dQZRfbrFQ2Ys
+# gyakuten 3iLHMc4qYd3b9k7JbtxxBq
 DIM = 12
 
 

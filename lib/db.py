@@ -1,6 +1,6 @@
 import sqlite3
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -27,6 +27,12 @@ class Track:
 class Album:
     id: str
     name: str
+
+
+@dataclass
+class Genre:
+    id: str
+    tags: List[str]
 
 
 def connect_db(db_name: str) -> sqlite3.Connection:
@@ -134,6 +140,12 @@ def is_album_exists(conn: sqlite3.Connection, album_id: str) -> bool:
     return cursor.fetchone() is not None
 
 
+def is_genre_exists(conn: sqlite3.Connection, album_id: str) -> bool:
+    cursor = conn.cursor()
+    cursor.execute("select * from genres where id=?", (album_id,))
+    return cursor.fetchone() is not None
+
+
 def get_album_list(conn: sqlite3.Connection, limit: int, offset: int) -> List[Album]:
     cursor = conn.cursor()
     cursor.execute("""select * from albums limit ? offset ?;""", (limit, offset,))
@@ -187,3 +199,39 @@ def get_tracks(conn: sqlite3.Connection, album_id: str, limit: int, offset: int)
         )
 
     return track_list
+
+
+def get_genre_list(conn: sqlite3.Connection, limit: int, offset: int) -> List[Genre]:
+    cursor = conn.cursor()
+    cursor.execute("""select * from genres limit ? offset ?;""", (limit, offset,))
+    genre_datas = cursor.fetchall()
+
+    genre_list = []
+    genre_cols = ["id", "tags"]
+    for genre_data_only in genre_datas:
+        genre_data = dict(zip(genre_cols, genre_data_only))
+        genre_list.append(Genre(id=genre_data["id"], tags=genre_data["tags"].split(",")))
+
+    return genre_list
+
+
+def get_album(conn: sqlite3.Connection, album_id: str) -> Optional[Album]:
+    cursor = conn.cursor()
+    cursor.execute("select * from albums where id=?", (album_id,))
+    album_data_only = cursor.fetchone()
+    if album_data_only is None:
+        return None
+    album_cols = ["id", "name"]
+    album_data = dict(zip(album_cols, album_data_only))
+    return Album(id=album_data["id"], name=album_data["name"])
+
+
+def get_genre(conn: sqlite3.Connection, album_id: str) -> Optional[Genre]:
+    cursor = conn.cursor()
+    cursor.execute("select * from genres where id=?", (album_id,))
+    genre_data_only = cursor.fetchone()
+    if genre_data_only is None:
+        return None
+    genre_cols = ["id", "tags"]
+    genre_data = dict(zip(genre_cols, genre_data_only))
+    return Genre(id=genre_data["id"], tags=genre_data["tags"].split(","))

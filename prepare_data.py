@@ -6,8 +6,8 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from lib.collect import *
 from lib.db import *
 
-# SPOTIFY_SEARCH_LIMIT = 1000
-SPOTIFY_SEARCH_LIMIT = 100  # DEBUG
+SPOTIFY_SEARCH_LIMIT = 1000
+# SPOTIFY_SEARCH_LIMIT = 100  # DEBUG
 DB_NAME = "soundtrack.sqlite"
 
 
@@ -16,6 +16,7 @@ def main():
     conn = connect_db(DB_NAME)
     create_albums_table_if_not_exists(conn)
     create_tracks_table_if_not_exists(conn)
+    create_genres_table_if_not_exists(conn)
 
     # Spotify APIの準備
     my_id = os.environ["SPOTIFY_CLIENT_ID"]
